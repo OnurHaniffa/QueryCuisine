@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>{{ restaurant.name }}</h1>
+
+<p><b>Location:</b> {{ restaurant.location.city }} - {{ restaurant.location.district }}</p>
+<p><b>Description:</b> {{ restaurant.description }}</p>
+
+<hr>
+
+<h2>Reviews</h2>
+
+<ul>
+    {% for review in reviews %}
+        <li>
+            ⭐ {{ review.rating }} - {{ review.comment }}
+        </li>
+    {% empty %}
+        <li>No reviews yet</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h3>Add Review</h3>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+<a href="{% url 'home' %}">← Back to Home</a>
+
+{% endblock %}
