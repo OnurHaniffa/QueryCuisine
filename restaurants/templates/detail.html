@@ -1,36 +1,71 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="mb-4">
+    <h1 class="text-maroon">{{ restaurant.name }}</h1>
+    <span class="badge badge-maroon">{{ restaurant.category.name }}</span>
+    <span class="badge badge-green">{{ restaurant.price_range }}</span>
+    <span class="badge bg-warning text-dark">Rating: {{ restaurant.average_rating }} / 5</span>
+</div>
 
-<h1>{{ restaurant.name }}</h1>
+<div class="row">
+    <div class="col-md-8">
+        <h5 class="text-maroon">Description</h5>
+        <p>{{ restaurant.description }}</p>
 
-<p><b>Location:</b> {{ restaurant.location.city }} - {{ restaurant.location.district }}</p>
-<p><b>Description:</b> {{ restaurant.description }}</p>
+        <h5 class="text-maroon">Details</h5>
+        <ul class="list-group mb-4">
+            <li class="list-group-item" style="border-color: #e8e0d4;"><strong>Address:</strong> {{ restaurant.address }}</li>
+            <li class="list-group-item" style="border-color: #e8e0d4;"><strong>Phone:</strong> {{ restaurant.phone }}</li>
+            <li class="list-group-item" style="border-color: #e8e0d4;"><strong>Location:</strong> {{ restaurant.location }}</li>
+        </ul>
+    </div>
+</div>
 
 <hr>
 
-<h2>Reviews</h2>
+<h2 class="mb-3 text-maroon">Reviews</h2>
 
-<ul>
-    {% for review in reviews %}
-        <li>
-            ⭐ {{ review.rating }} - {{ review.comment }}
-        </li>
-    {% empty %}
-        <li>No reviews yet</li>
-    {% endfor %}
-</ul>
+{% for review in reviews %}
+    <div class="card mb-3 shadow-sm">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <h6 class="card-title">{{ review.user.username }}</h6>
+                <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>
+            </div>
+            <p class="card-text">
+                <span class="text-warning">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= review.rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </span>
+            </p>
+            <p class="card-text">{{ review.comment }}</p>
+        </div>
+    </div>
+{% empty %}
+    <p class="text-muted">No reviews yet. Be the first to review!</p>
+{% endfor %}
 
 <hr>
 
-<h3>Add Review</h3>
+{% if not already_reviewed %}
+    <h3 class="text-maroon">Add Your Review</h3>
+    <form method="post" class="mb-4">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="id_rating" class="form-label">Rating (1-5)</label>
+            {{ form.rating }}
+        </div>
+        <div class="mb-3">
+            <label for="id_comment" class="form-label">Comment</label>
+            {{ form.comment }}
+        </div>
+        <button type="submit" class="btn btn-warm">Submit Review</button>
+    </form>
+{% else %}
+    <p class="text-muted">You have already reviewed this restaurant.</p>
+{% endif %}
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
-</form>
-
-<a href="{% url 'home' %}">← Back to Home</a>
-
+<a href="{% url 'home' %}" class="btn btn-outline-warm mb-4">← Back to Home</a>
 {% endblock %}

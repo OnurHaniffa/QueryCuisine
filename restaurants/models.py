@@ -61,6 +61,34 @@ class Restaurant(models.Model):
     def __str__(self):
         return self.name
 
+# ---------------- OPENING HOURS ----------------            
+class OpeningHours(models.Model):                          
+    DAY_CHOICES = [
+        (0, 'Monday'),
+        (1, 'Tuesday'),                                      
+        (2, 'Wednesday'),
+        (3, 'Thursday'),                                     
+        (4, 'Friday'),                                     
+        (5, 'Saturday'),
+        (6, 'Sunday'),
+      ]                                                        
+   
+    restaurant = models.ForeignKey(                          
+          Restaurant,                                        
+          on_delete=models.CASCADE,
+          related_name='opening_hours'
+      )
+    day_of_week = models.IntegerField(choices=DAY_CHOICES)
+    open_time = models.TimeField()                           
+    close_time = models.TimeField()
+                                                               
+    class Meta:                                            
+        unique_together = ['restaurant', 'day_of_week']
+        ordering = ['day_of_week']                           
+        verbose_name_plural = "Opening Hours"
+                                                               
+    def __str__(self):                                     
+        return f"{self.restaurant.name} - {self.get_day_of_week_display()}"
 
 # ---------------- MENU ITEM ----------------
 class MenuItem(models.Model):

@@ -1,25 +1,7 @@
 {% extends "base.html" %}
 
-{% block hero %}
-<div class="hero-warm py-5">
-    <div class="container text-center">
-        <h1 class="display-3 fw-bold mb-3">
-            <i class="bi bi-pin-map-fill text-maroon"></i> QueryCuisine
-        </h1>
-        <p class="lead mb-2">Where Great Minds Find Great Food</p>
-        <p class="text-muted mb-4">Explore top-rated restaurants, read real reviews, and discover your next favorite spot across Istanbul and beyond.</p>
-        <a href="{% url 'restaurant_list' %}" class="btn btn-warm btn-lg me-2">
-            <i class="bi bi-search"></i> Explore Restaurants
-        </a>
-        <a href="{% url 'about' %}" class="btn btn-outline-warm btn-lg">
-            Learn More
-        </a>
-    </div>
-</div>
-{% endblock %}
-
 {% block content %}
-<h2 class="mb-4 text-maroon">Popular Restaurants</h2>
+<h1 class="mb-4 text-maroon">All Restaurants</h1>
 
 <div class="row">
     {% for restaurant in restaurants %}
@@ -52,7 +34,7 @@
             </div>
         </div>
     {% empty %}
-        <p>No restaurants yet.</p>
+        <p>No restaurants found.</p>
     {% endfor %}
 </div>
 {% endblock %}

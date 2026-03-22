@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-4 fw-bold text-maroon mb-4">About QueryCuisine</h1>
+    <p class="lead mb-4" style="max-width: 700px; margin: 0 auto;">
+        QueryCuisine is a restaurant review and discovery platform built for food lovers.
+        We help you find the best dining spots, read honest reviews from real diners,
+        and share your own culinary experiences.
+    </p>
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4" style="border-color: #e8e0d4;">
+            <div class="card-body text-center py-4">
+                <h3 class="text-maroon mb-3"><i class="bi bi-search"></i> Discover</h3>
+                <p class="mb-0">Browse restaurants by category, location, and price range. From street food to fine dining, find exactly what you're craving.</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4" style="border-color: #e8e0d4;">
+            <div class="card-body text-center py-4">
+                <h3 class="text-maroon mb-3"><i class="bi bi-star"></i> Review</h3>
+                <p class="mb-0">Rate your dining experiences with 1-5 stars and leave detailed reviews to help other food lovers make informed choices.</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4" style="border-color: #e8e0d4;">
+            <div class="card-body text-center py-4">
+                <h3 class="text-maroon mb-3"><i class="bi bi-heart"></i> Share</h3>
+                <p class="mb-0">Build your favorites list, reply to reviews, and be part of a growing community of food enthusiasts across Istanbul and beyond.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="text-center pb-5">
+    <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
+        QueryCuisine was built with Django as part of CSE 220 — Web Programming at Acibadem University, Spring 2026.
+        Designed and developed by a team of four students passionate about food and technology.
+    </p>
+</div>
+{% endblock %}
