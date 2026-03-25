@@ -8,26 +8,31 @@ def home(request):
     return render(request, "home.html", {"restaurants": restaurants})
 
 
-@login_required
 def restaurant_detail(request, restaurant_id):
     restaurant = get_object_or_404(Restaurant, id=restaurant_id)
     reviews = restaurant.reviews.all()
+    opening_hours = restaurant.opening_hours.all()
+    menu_items = restaurant.menu_items.all()
     form = ReviewForm()
+    already_reviewed = False
 
-    already_reviewed = Review.objects.filter(restaurant=restaurant, user=request.user).exists()
+    if request.user.is_authenticated:
+        already_reviewed = Review.objects.filter(restaurant=restaurant, user=request.user).exists()
 
-    if request.method == "POST" and not already_reviewed:
-        form = ReviewForm(request.POST)
-        if form.is_valid():
-            review = form.save(commit=False)
-            review.restaurant = restaurant
-            review.user = request.user
-            review.save()
-            return redirect('restaurant_detail', restaurant_id=restaurant.id)
+        if request.method == "POST" and not already_reviewed:
+            form = ReviewForm(request.POST)
+            if form.is_valid():
+                review = form.save(commit=False)
+                review.restaurant = restaurant
+                review.user = request.user
+                review.save()
+                return redirect('restaurant_detail', restaurant_id=restaurant.id)
 
     return render(request, "detail.html", {
         "restaurant": restaurant,
         "reviews": reviews,
+        "opening_hours": opening_hours,
+        "menu_items": menu_items,
         "form": form,
         "already_reviewed": already_reviewed,
     })
