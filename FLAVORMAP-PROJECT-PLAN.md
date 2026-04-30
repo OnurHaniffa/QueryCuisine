@@ -3,9 +3,136 @@
 ## CSE 220 Web Programming | Spring 2026 | Acıbadem University
 
 **Team Size:** 4 people
-**Current Week:** 5 (March 5, 2026)
-**Progress Demo:** Week 8
-**Final Demo:** Weeks 14-15
+**Current Week:** ~14 (April 30, 2026) — **FINAL STRETCH**
+**Progress Demo:** Week 8 ✅ DONE
+**Final Demo:** Weeks 14-15 (next week — this is what we're sprinting to)
+
+---
+
+# 🚨 FINAL STRETCH HANDOFF — START HERE 🚨
+
+> **For teammates joining the final push:** read this section first, then jump to Week 9 and Weeks 10-11. Earlier weeks (5-8) are kept as reference but are already done.
+
+## Where the project stands today (April 30, 2026)
+
+**✅ Already done (do NOT redo):**
+- Django project + `restaurants` app set up, `INSTALLED_APPS` configured
+- All 9 models created and migrated (`Category`, `Location`, `Restaurant`, `OpeningHours`, `MenuItem`, `Review`, `ReviewReply`, `Favorite`, `UserProfile`)
+- Admin panel customized for every model (`list_display`, `search_fields`, `list_filter`)
+- 5 URL patterns: `home`, `restaurant_list`, `restaurant_detail`, `about`, `contact`
+- 6 templates (flat in `restaurants/templates/`): `base.html`, `home.html`, `restaurant_list.html`, `detail.html`, `about.html`, `contact.html`, `login.html` (template only — no view yet)
+- Restaurant detail page: shows reviews + star ratings + opening hours + menu items
+- Review submission form with `@login_required` guard + duplicate-prevention (one review per user per restaurant)
+- Bootstrap 5 + Bootstrap Icons + warm color theme (maroon / green / cream)
+- Test data: 6 restaurants, 24 menu items, 18 reviews, 28 opening hours entries
+- Progress Demo (Week 8) delivered
+
+**🟢 Just shipped by Onur (April 30, 2026):**
+- ✅ `MEDIA_URL` / `MEDIA_ROOT` in `settings.py` + dev-only `static()` hookup in project `urls.py`. Photo upload pipeline is unblocked — Person B can use `enctype="multipart/form-data"` and `request.FILES` and it'll work.
+- ✅ Full auth flow: `register_view`, `login_view`, `logout_view` in `restaurants/views.py`. Built on Django's `UserCreationForm` and `AuthenticationForm`, no custom auth.
+- ✅ `RegisterForm` in `forms.py` (extends `UserCreationForm`, requires email).
+- ✅ Three new URL patterns wired: `/register/`, `/login/`, `/logout/`.
+- ✅ `LOGIN_URL` and `LOGIN_REDIRECT_URL` settings — `@login_required` now actually works.
+- ✅ `login.html` rebuilt from a leftover PyCharm stub. New `register.html` matching the same warm-Bootstrap card style.
+- ✅ Navbar in `base.html` now branches on `user.is_authenticated` — Hello/Logout when logged in, Login/Register when not. Logout is a CSRF-protected POST form, not a link.
+- ✅ Django messages framework displaying as Bootstrap alerts at the top of every page. Welcome/welcome-back/logout toasts emit from the auth views. `MESSAGE_TAGS` maps Django's `error` to Bootstrap's `danger` so future error messages render correctly.
+- ✅ Already-logged-in users hitting `/login/` or `/register/` get bounced to home — no weird state.
+- ✅ `UserProfile` row auto-created on registration, so Person C never has to handle a missing profile.
+- ✅ Verified end-to-end in a real Chromium browser via Playwright: register → welcome alert → restaurant detail (review form unlocks) → logout → login again. All 8 checks pass. Screenshots in `/tmp/qc-screenshots/` (test-only, not committed).
+
+**❌ Still TO DO for the final demo (this is the work to split):**
+- Restaurant CRUD (Create / Edit / Delete forms with ownership check) — **Person B**
+- Search bar (`?q=`) — **Person D**
+- Category / Location / Price filters — **Person D**
+- Menu CRUD — **Person B**
+- Favorites (toggle + list page) — **Person B**
+- User profile page (bio + my reviews + my favorites) — **Person C**
+- Review replies UI — **Person C**
+- Atomic transactions on multi-step views — **Person D**
+- Popular ranking / sort options (top-rated, newest, price) — **Person D**
+- Photo upload working end-to-end (Person B builds the form with `enctype`, Person D verifies it serves correctly)
+- Final demo prep + 6-8 page hardcopy report — everyone
+
+## The 4-way split
+
+### Week 9 (MS3) — auth, CRUD, filtering
+
+| Person | Task | Status |
+|---|---|---|
+| **A — Onur** | Auth (register/login/logout) + `LOGIN_URL` + `MEDIA` config + nav update + messages framework + UserProfile auto-create | **✅ DONE — April 30** (browser-tested with Playwright) |
+| **B** | **Restaurant CRUD** (create/edit/delete with ownership check, photo upload). See Week 9 § Restaurant CRUD below | ⏳ ready to start — auth + MEDIA dependencies are merged |
+| **C** | **Review polish** — add edit/delete review views + UI buttons (the form itself is already done). See Week 9 § Review System below | ⏳ ready to start — auth dependency is merged |
+| **D** | **Search & filtering** — `?q=` + category + location + price dropdowns on restaurant list. See Week 9 § Search & Filtering below | ⏳ ready to start (no auth dependency, can begin immediately) |
+
+### Weeks 10-11 — remaining mandatory features
+
+| Person | Task | Plan reference |
+|---|---|---|
+| **A — Onur** | (Optional polish — Onur's Week 9 is already heavier because Auth is foundational) | Bonus / pagination / extra polish |
+| **B** | **Menu CRUD** (reuses the Restaurant CRUD pattern they just built) + **Favorites** (toggle button + `/favorites/` list page) | Weeks 10-11 § Menu Management + Favorites |
+| **C** | **User Profile** + **Review Replies** UI | Weeks 10-11 § User Profile + Review Replies |
+| **D** | **Atomic transactions** + **Popular ranking/sorting** + **Photo upload finalization** | Weeks 10-11 § Atomic / Popular / Photo Upload |
+
+> **Note on Opening Hours:** Public CRUD for opening hours has been **dropped** from the worklist. The mandatory feature is "Opening hours **display**," which is already done on the restaurant detail page. Admins can add/edit hours through the Django admin panel. No public form needed.
+
+### Weeks 12-13 — bonus + polish
+
+Whoever finishes their slice first picks up bonus features. Priority order:
+1. CSS polish + responsiveness — already mostly done, just sweep every page
+2. JavaScript: star-rating widget + AJAX favorite toggle (no page reload)
+3. Pagination on the restaurant list
+4. Advanced multi-filter (combine search + filters cleanly)
+5. Review likes/dislikes
+6. Map iframe on restaurant detail
+
+### Weeks 14-15 — final demo + report
+
+Everyone helps. See "WEEK 14-15 — Final Demo + Report" section below for demo script and 6-8 page report template.
+
+## Codebase conventions (READ BEFORE WRITING CODE)
+
+These are how the existing code is set up. Match these so we don't end up with a Frankenstein.
+
+| Convention | Value | Why |
+|---|---|---|
+| **View style** | Function-based views (FBV) only | This is what the course teaches. No CBVs. |
+| **Auth** | Django built-in `django.contrib.auth` | No custom user model. |
+| **Database** | SQLite (`db.sqlite3` in project root) | No Postgres / MySQL. |
+| **URL parameter for the existing detail route** | `<int:restaurant_id>` (already in `restaurants/urls.py`) | Keep for existing URL — don't break it. |
+| **URL parameter for NEW CRUD routes** | `<int:pk>` (Django convention) | Use this for new URLs you add. |
+| **Template location** | Flat in `restaurants/templates/` (NO subfolder) | Existing templates are flat. Do not create `restaurants/templates/restaurants/`. |
+| **Template render call** | `render(request, "yourfile.html", context)` | Path is relative to `restaurants/templates/`. |
+| **Form classes** | All in `restaurants/forms.py` | One central file. |
+| **Static assets** | Bootstrap 5 + Bootstrap Icons via CDN, custom CSS in `<style>` block in `base.html` | Already wired. |
+| **Permission check pattern** | `if obj.created_by != request.user: return redirect(...)` inside view, plus `{% if user == obj.created_by %}` in template | Show edit/delete only to the owner. |
+| **Commit style** | Descriptive, human-sounding, no Claude / AI attribution | "Add login view + register form" not "feat(auth)". |
+
+## Daily git workflow for the final stretch
+
+Everyone is working in parallel. Avoid stomping each other:
+
+1. `git pull` before you start
+2. Work on **your assigned slice only** — don't touch someone else's files
+3. Test locally: `python manage.py runserver` and click through your feature
+4. `git add <only your files>` — don't `git add .` blindly (could drag in someone's WIP)
+5. Commit with a clear message
+6. `git pull --rebase` then `git push`
+7. If you hit a merge conflict in `views.py`, `urls.py`, or `forms.py`, ping Onur in the group chat — these are the high-traffic files
+
+## Setup if you're catching up on a fresh machine
+
+```bash
+git clone <repo-url>
+cd flavormap
+python3 -m venv venv
+source venv/bin/activate            # Windows: venv\Scripts\activate
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser    # for admin panel access
+python manage.py runserver
+```
+
+Open http://127.0.0.1:8000 — you should see the home page with restaurants listed.
 
 ---
 
@@ -307,6 +434,8 @@ git push
 ---
 
 ## WEEK 5 — MS1: Project Skeleton + Static Pages
+
+> **✅ DONE — kept here for reference only.** Skip this section if you're catching up. Skeleton, static pages, base template, URL patterns and view stubs all exist in the repo.
 
 ### Goal
 Get the Django project running with 5+ URL routes, template inheritance, and hardcoded data displayed on pages. No database yet.
@@ -655,6 +784,8 @@ git push
 ---
 
 ## WEEK 6 — MS2: Models + Admin + Dynamic Data
+
+> **✅ MOSTLY DONE — kept here for reference only.** All 9 models, admin customization, sample data, and dynamic home/list/detail pages are live. ⚠️ **One leftover from this week:** Step 7 (MEDIA config) was never actually applied to `settings.py` — it's been moved into Person A's slice for Week 9. See the "STATUS" callout in Step 7 below.
 
 ### Goal
 Replace all hardcoded data with real database models. Set up the admin panel. Populate with sample data. Share GitHub repo with TA.
@@ -1031,6 +1162,8 @@ Note: `restaurant.average_rating` calls the method you defined in the model. Dja
 
 ### Step 7: Configure Media Files (for photos)
 
+> **⚠️ STATUS: NOT YET DONE — moved to Week 9, owned by Person A (Onur).** This step was scheduled here originally but was skipped during MS2. The `Restaurant.photo` `ImageField` exists on the model but `MEDIA_URL` / `MEDIA_ROOT` are NOT in `settings.py`, so uploads currently won't save or serve. Person A will apply the snippet below as the very first thing in Week 9, before anyone touches photo upload or restaurant CRUD.
+
 **What:** You're configuring Django to handle user-uploaded files (restaurant photos). This involves two settings (`MEDIA_URL` and `MEDIA_ROOT`) and adding a URL pattern so Django can serve these files during development.
 
 **Why:** Django separates "static files" (your CSS, JS, logo — things YOU provide) from "media files" (things USERS upload — restaurant photos, profile pictures). Media files need their own storage location and URL path. Without this config, `ImageField` on your Restaurant model has nowhere to save files, and even if it did, Django wouldn't know how to serve them to the browser.
@@ -1096,6 +1229,8 @@ git push
 
 ## WEEK 7 — Polish + Demo Prep
 
+> **✅ DONE — kept here for reference only.** Bootstrap 5, warm color theme, and Bootstrap Icons are wired in `base.html`.
+
 ### Goal
 Make sure MS1 + MS2 are solid. Practice the demo. Fix bugs.
 
@@ -1122,6 +1257,8 @@ Then wrap your content in Bootstrap classes (`container`, `row`, `col`, `card`, 
 
 ## WEEK 8 — Progress Demo
 
+> **✅ DONE — Progress Demo delivered.** Kept here for reference.
+
 ### Demo Script (10 minutes)
 
 | Time | What | Who |
@@ -1141,14 +1278,27 @@ Then wrap your content in Bootstrap classes (`container`, `row`, `col`, `card`, 
 
 ## WEEK 9 — MS3: Auth + CRUD + Reviews + Filtering
 
+> **🔥 THIS IS WHERE THE FINAL STRETCH STARTS.** Read the "FINAL STRETCH HANDOFF" section at the very top of this file before you start writing code.
+>
+> **Order of operations matters this week:**
+> 1. Person A ships **MEDIA config + Auth first** — everything else builds on auth.
+> 2. Once auth is on `main`, Person B (Restaurant CRUD) and Person D (Search/Filter) unblock and can work in parallel.
+> 3. Person C's review write-form is ALREADY DONE — they just add edit/delete review views + buttons.
+>
+> **Convention reminders before you start (full list at the top of this doc):**
+> - Function-based views only — no class-based.
+> - Templates are **flat** in `restaurants/templates/`. Do NOT create `restaurants/templates/restaurants/`. The plan snippets below sometimes show `restaurants/restaurant_detail.html` — translate that to just `detail.html` (or whatever the existing flat name is).
+> - URL params: existing `restaurant_detail` keeps `<int:restaurant_id>`. NEW CRUD routes use `<int:pk>` (Django convention).
+> - All forms go in `restaurants/forms.py` (already exists; currently has `ReviewForm`).
+
 ### Goal
 Make QueryCuisine interactive. Users can register, log in, create/edit/delete restaurants and reviews, and filter results.
 
-### Suggested Team Split
-- **Person A:** Authentication (register, login, logout)
-- **Person B:** Restaurant CRUD (create, edit, delete forms)
-- **Person C:** Review system (write, edit, delete reviews)
-- **Person D:** Search and filtering
+### Team Split
+- **Person A — Onur:** **MEDIA config first** (Week 6 Step 7 leftover) → then **Authentication** (register, login, logout, `LOGIN_URL`, nav update)
+- **Person B:** Restaurant CRUD (create, edit, delete forms with ownership check; photo upload works once Person A's MEDIA is in)
+- **Person C:** Review system polish — **the review write-form is already done in `views.py` + `forms.py` + `detail.html`.** What's left: edit-review view, delete-review view, "Edit / Delete" buttons on each review (only visible to the review's author).
+- **Person D:** Search and filtering (`?q=`, `?category=`, `?location=`, `?price=` on the restaurant list page)
 
 ### Authentication
 
@@ -1337,6 +1487,17 @@ path('restaurants/<int:pk>/delete/', views.restaurant_delete, name='restaurant_d
 
 ### Review System
 
+> **✅ Write-form is already done.** `ReviewForm` in `forms.py` and the POST handling in `restaurant_detail` view + `detail.html` all work. One review per user is enforced.
+>
+> **What's left for Person C:**
+> 1. `review_edit(request, pk)` view — pre-fill the existing review, save changes, redirect back to detail page. Permission check: only the review's author can edit.
+> 2. `review_delete(request, pk)` view — POST-only, permission check, redirect back to detail page.
+> 3. Two new URL patterns: `path('review/<int:pk>/edit/', ...)` and `path('review/<int:pk>/delete/', ...)`.
+> 4. In `detail.html`, inside the `{% for review in reviews %}` loop: `{% if review.user == user %}` show "Edit" and "Delete" buttons.
+> 5. A simple `review_edit.html` template (one form + submit).
+>
+> Skim the rest of this section for context, but skip the "ReviewForm" / POST-handler snippets — they're already in the codebase.
+
 **What:** You're adding the ability for logged-in users to write reviews (1-5 stars + text comment) on restaurant detail pages. Each user can only review a restaurant once. Users can also edit or delete their own reviews.
 
 **Why:** Reviews are the heart of QueryCuisine — it's a "Restaurant Review & Discovery Platform." Without reviews, there are no ratings, no average scores, no "Top Rated" section, no user-generated content. The review system also feeds into multiple other features: average rating calculation, user profiles ("my reviews"), review replies, and review likes (bonus).
@@ -1496,13 +1657,17 @@ def restaurant_list(request):
 
 ## WEEKS 10-11 — Remaining Mandatory Features
 
-### Suggested Team Split
-- **Person A:** Menu Management + Opening Hours CRUD
-- **Person B:** Favorites system
+### Team Split (rebalanced)
+- **Person A — Onur:** Optional polish only (Onur's Week 9 Auth slice is already heavier because it unblocks everyone else). Picks up bonus features or pagination if time permits.
+- **Person B:** **Menu CRUD** (reuses the Restaurant CRUD pattern they just built — should be ~30-45 min of pattern-copy) + **Favorites** system
 - **Person C:** User Profile page + Review Replies
-- **Person D:** Atomic Transactions + Popular Ranking/Sorting
+- **Person D:** Atomic Transactions + Popular Ranking/Sorting + Photo upload finalization
+
+> **⚠️ Opening Hours CRUD has been DROPPED.** The mandatory requirement is "Opening hours display" which is already shipped on the detail page. Admins can edit hours via the admin panel — no public form needed. Don't build it.
 
 ### Menu Management
+
+> **👤 Owned by Person B.** You already built Restaurant CRUD in Week 9 — Menu CRUD is the same pattern. Copy your `RestaurantForm` / `restaurant_create` / `restaurant_edit` / `restaurant_delete` and adapt for `MenuItem`. The big difference: menu items belong to a restaurant, so the create URL is nested (`restaurants/<int:pk>/menu/add/`) and the create view sets `menu_item.restaurant = restaurant` from the URL `pk` (same trick you use for `review.user = request.user`). Permission check: only the restaurant's `created_by` can add/edit/delete its menu items.
 
 **What:** You're adding CRUD for menu items — restaurant owners can add, edit, and delete dishes (name, description, price, category like "Main", "Drink", "Dessert") that belong to their restaurant. The menu displays on the restaurant detail page.
 
