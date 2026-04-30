@@ -116,3 +116,20 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Media files (user-uploaded content, e.g. restaurant photos)
+# MEDIA_URL is the URL prefix the browser uses; MEDIA_ROOT is where the files
+# physically live on disk. Together they let ImageField save and serve photos.
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Auth: where @login_required sends anonymous users, and where login() redirects to on success
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+
+# Map Django's "error" message tag to Bootstrap's "danger" alert class so
+# {% if messages %} renders correctly with alert-{{ message.tags }}
+from django.contrib.messages import constants as message_constants
+MESSAGE_TAGS = {
+    message_constants.ERROR: 'danger',
+}
