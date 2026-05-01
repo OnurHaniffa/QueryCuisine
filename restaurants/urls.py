@@ -11,4 +11,9 @@ urlpatterns = [
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
+
+    # CRUD (BURAYA EKLE!)
+    path('restaurant/create/', views.restaurant_create, name='restaurant_create'),
+    path('restaurant/<int:pk>/edit/', views.restaurant_edit, name='restaurant_edit'),
+    path('restaurant/<int:pk>/delete/', views.restaurant_delete, name='restaurant_delete'),
 ]

@@ -4,7 +4,7 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from .models import Restaurant, Review, UserProfile
-from .forms import ReviewForm, RegisterForm
+from .forms import ReviewForm, RegisterForm, RestaurantForm
 
 def home(request):
     restaurants = Restaurant.objects.all()
@@ -91,3 +91,41 @@ def logout_view(request):
     logout(request)
     messages.info(request, "You have been logged out.")
     return redirect("home")
+@login_required
+def restaurant_create(request):
+    if request.method == 'POST':
+        form = RestaurantForm(request.POST, request.FILES)
+        if form.is_valid():
+            restaurant = form.save(commit=False)
+            restaurant.created_by = request.user
+            restaurant.save()
+            return redirect('restaurant_list')
+    else:
+        form = RestaurantForm()
+
+    return render(request, 'restaurant_form.html', {'form': form})
+@login_required
+def restaurant_edit(request, pk):
+    restaurant = get_object_or_404(Restaurant, pk=pk)
+
+    if restaurant.created_by != request.user:
+        return redirect('restaurant_list')
+
+    if request.method == 'POST':
+        form = RestaurantForm(request.POST, request.FILES, instance=restaurant)
+        if form.is_valid():
+            form.save()
+            return redirect('restaurant_detail', restaurant_id=restaurant.id)
+    else:
+        form = RestaurantForm(instance=restaurant)
+
+    return render(request, 'restaurant_form.html', {'form': form})
+@login_required
+def restaurant_delete(request, pk):
+    restaurant = get_object_or_404(Restaurant, pk=pk)
+
+    if restaurant.created_by != request.user:
+        return redirect('restaurant_list')
+
+    restaurant.delete()
+    return redirect('restaurant_list')
