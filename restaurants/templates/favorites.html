@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Favorilerim</h2>
+
+    {% if restaurants %}
+        <ul class="list-group mt-3">
+            {% for r in restaurants %}
+                <li class="list-group-item">
+                    <a href="{% url 'restaurant_detail' r.id %}">
+                        {{ r.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>Henüz favori eklemediniz.</p>
+    {% endif %}
+</div>
+{% endblock %}

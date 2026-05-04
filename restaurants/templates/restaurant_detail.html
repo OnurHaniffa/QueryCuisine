@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ restaurant.name }}</title>
+</head>
+<body>
+
+<h1>{{ restaurant.name }}</h1>
+<p>{{ restaurant.description }}</p>
+
+<hr>
+
+<h3>Reviews</h3>
+
+{% for review in reviews %}
+    <p>
+        ⭐ {{ review.rating }} - {{ review.comment }}
+    </p>
+{% empty %}
+    <p>No reviews yet.</p>
+{% endfor %}
+
+<hr>
+
+{% if user.is_authenticated %}
+<form method="POST" action="/review/add/{{ restaurant.id }}/">
+    {% csrf_token %}
+    <input type="number" name="rating" min="1" max="5" placeholder="Rating">
+    <br>
+    <textarea name="comment" placeholder="Comment"></textarea>
+    <br>
+    <button type="submit">Add Review</button>
+</form>
+{% else %}
+<p>Login to add review</p>
+{% endif %}
+
+<hr>
+
+<a href="/favorites/">My Favorites</a>
+
+</body>
+</html>

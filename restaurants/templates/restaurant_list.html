@@ -4,6 +4,7 @@
 
 <h1 class="mb-4 text-maroon">All Restaurants</h1>
 
+<!-- FILTER FORM -->
 <form method="GET" class="mb-4">
 
     <!-- SEARCH -->
@@ -56,12 +57,14 @@
 
 </form>
 
+<!-- ADD BUTTON -->
 {% if user.is_authenticated %}
     <a href="{% url 'restaurant_create' %}" class="btn btn-success mb-3">
         + Add Restaurant
     </a>
 {% endif %}
 
+<!-- GRID -->
 <div class="row">
 
     {% for restaurant in restaurants %}
@@ -71,87 +74,44 @@
 
                 <div class="card-body">
 
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <h5 class="card-title mb-0">{{ restaurant.name }}</h5>
-                        <span class="badge bg-success">
-                            {{ restaurant.price_range }}
-                        </span>
-                    </div>
+                    <h5 class="card-title">{{ restaurant.name }}</h5>
 
-                    <span class="badge bg-danger mb-2">
-                        {{ restaurant.category.name }}
+                    <span class="badge bg-success">
+                        {{ restaurant.price_range }}
                     </span>
 
                     <p class="text-muted small">
                         {{ restaurant.location.district }}, {{ restaurant.location.city }}
                     </p>
 
-                    <p>
-                        {{ restaurant.description|truncatewords:12 }}
-                    </p>
+                    <p>{{ restaurant.description|truncatewords:12 }}</p>
 
-                    <p>
-                        <span class="text-warning">
-                            {% for i in "12345" %}
-                                {% if forloop.counter <= restaurant.average_rating %}
-                                    ★
-                                {% else %}
-                                    ☆
-                                {% endif %}
-                            {% endfor %}
-                        </span>
-                        {{ restaurant.average_rating }} / 5
-                    </p>
-
-                    {% if user == restaurant.created_by %}
-                        <a href="{% url 'restaurant_edit' restaurant.id %}" class="btn btn-warning btn-sm">
-                            Edit
-                        </a>
-
-                        <a href="{% url 'restaurant_delete' restaurant.id %}" class="btn btn-danger btn-sm">
-                            Delete
+                    <!-- FAVORITE -->
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'toggle_favorite' restaurant.id %}"
+                           class="btn btn-outline-danger btn-sm">
+                            ♥ Favorite
                         </a>
                     {% endif %}
-                    <a href="{% url 'toggle_favorite' restaurant.id %}"
-                       class="btn btn-outline-danger btn-sm">
-                          ♥ Favorite
-                    </a>
 
                 </div>
 
                 <div class="card-footer bg-white">
-                    <a href="{% url 'restaurant_detail' restaurant.id %}" class="btn btn-outline-primary btn-sm w-100">
+
+                    <a href="{% url 'restaurant_detail' restaurant.id %}"
+                       class="btn btn-outline-primary btn-sm w-100">
                         View Details
                     </a>
+
                 </div>
 
             </div>
 
         </div>
+
     {% empty %}
         <p>No restaurants found.</p>
     {% endfor %}
-
-</div>
-
-<!-- PAGINATION -->
-<div class="mt-4 d-flex justify-content-center">
-
-    {% if restaurants.has_previous %}
-        <a href="?page={{ restaurants.previous_page_number }}" class="btn btn-outline-primary me-2">
-            Previous
-        </a>
-    {% endif %}
-
-    <span class="align-self-center">
-        Page {{ restaurants.number }} of {{ restaurants.paginator.num_pages }}
-    </span>
-
-    {% if restaurants.has_next %}
-        <a href="?page={{ restaurants.next_page_number }}" class="btn btn-outline-primary ms-2">
-            Next
-        </a>
-    {% endif %}
 
 </div>
 
