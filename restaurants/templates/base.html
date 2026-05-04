@@ -86,9 +86,19 @@
                 </li>
 
                 {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'favorite_list' %}">
+                            <i class="bi bi-heart"></i> Favorites
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">
+                            <i class="bi bi-person"></i> Profile
+                        </a>
+                    </li>
                     <li class="nav-item ms-lg-3">
-                        <span class="navbar-text text-warm" style="color: #c9b99a;">
-                            <i class="bi bi-person-circle"></i> Hello, <strong>{{ user.username }}</strong>
+                        <span class="navbar-text" style="color: #c9b99a;">
+                            <i class="bi bi-person-circle"></i> Hi, <strong>{{ user.username }}</strong>
                         </span>
                     </li>
                     <li class="nav-item ms-lg-2">

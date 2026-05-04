@@ -1,0 +1,49 @@
+{% comment %}
+Reusable card. Expects a `restaurant` variable.
+Used by home.html and anywhere else we want a uniform card.
+{% endcomment %}
+<div class="col-md-4 mb-4">
+    <div class="card h-100 shadow-sm" style="border-color: #e8e0d4;">
+        {% if restaurant.photo %}
+            <img src="{{ restaurant.photo.url }}"
+                 alt="{{ restaurant.name }}"
+                 class="card-img-top"
+                 style="height: 180px; object-fit: cover;">
+        {% else %}
+            <div class="card-img-top d-flex align-items-center justify-content-center"
+                 style="height: 180px; background-color: #f5f0e8; color: #c9b99a;">
+                <i class="bi bi-image" style="font-size: 2.5rem;"></i>
+            </div>
+        {% endif %}
+
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+                <h5 class="card-title mb-0 text-maroon">{{ restaurant.name }}</h5>
+                <span class="badge badge-green">{{ restaurant.price_range }}</span>
+            </div>
+            <span class="badge badge-maroon mb-2">{{ restaurant.category.name }}</span>
+            <p class="text-muted small mb-2">
+                <i class="bi bi-geo-alt"></i>
+                {{ restaurant.location.district }}, {{ restaurant.location.city }}
+            </p>
+            <p class="card-text">
+                {{ restaurant.description|truncatewords:12 }}
+            </p>
+            <p class="card-text mb-0">
+                <span class="text-warning">
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= restaurant.average_rating %}★{% else %}☆{% endif %}
+                    {% endfor %}
+                </span>
+                <small class="text-muted">{{ restaurant.average_rating }} / 5</small>
+            </p>
+        </div>
+
+        <div class="card-footer bg-white" style="border-color: #e8e0d4;">
+            <a href="{% url 'restaurant_detail' restaurant.id %}"
+               class="btn btn-warm btn-sm w-100">
+                View Details <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
