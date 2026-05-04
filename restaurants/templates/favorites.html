@@ -1,21 +1,78 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Favorilerim</h2>
+<h1 class="text-maroon mb-4">
+    <i class="bi bi-heart-fill"></i> My Favorites
+</h1>
 
-    {% if restaurants %}
-        <ul class="list-group mt-3">
-            {% for r in restaurants %}
-                <li class="list-group-item">
-                    <a href="{% url 'restaurant_detail' r.id %}">
-                        {{ r.name }}
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>Henüz favori eklemediniz.</p>
-    {% endif %}
-</div>
+{% if favorites %}
+    <div class="row">
+        {% for favorite in favorites %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm" style="border-color: #e8e0d4;">
+                    {% if favorite.restaurant.photo %}
+                        <img src="{{ favorite.restaurant.photo.url }}"
+                             alt="{{ favorite.restaurant.name }}"
+                             class="card-img-top"
+                             style="height: 180px; object-fit: cover;">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title text-maroon">
+                            {{ favorite.restaurant.name }}
+                        </h5>
+
+                        <div class="mb-2">
+                            <span class="badge badge-maroon">
+                                {{ favorite.restaurant.category.name }}
+                            </span>
+                            <span class="badge badge-green">
+                                {{ favorite.restaurant.price_range }}
+                            </span>
+                        </div>
+
+                        <p class="text-muted small mb-2">
+                            <i class="bi bi-geo-alt"></i>
+                            {{ favorite.restaurant.location.district }},
+                            {{ favorite.restaurant.location.city }}
+                        </p>
+
+                        <p class="card-text">
+                            {{ favorite.restaurant.description|truncatewords:14 }}
+                        </p>
+                    </div>
+
+                    <div class="card-footer bg-white d-flex gap-2"
+                         style="border-color: #e8e0d4;">
+                        <a href="{% url 'restaurant_detail' favorite.restaurant.id %}"
+                           class="btn btn-warm btn-sm flex-grow-1">
+                            View Details
+                        </a>
+                        <form method="post"
+                              action="{% url 'toggle_favorite' favorite.restaurant.id %}">
+                            {% csrf_token %}
+                            <button type="submit"
+                                    class="btn btn-outline-danger btn-sm">
+                                <i class="bi bi-heart-fill"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <div class="card shadow-sm" style="border-color: #e8e0d4;">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-heart text-muted" style="font-size: 3rem;"></i>
+            <h4 class="text-maroon mt-3">No favorites yet</h4>
+            <p class="text-muted">
+                Browse restaurants and tap the heart to save them here.
+            </p>
+            <a href="{% url 'restaurant_list' %}" class="btn btn-warm">
+                Browse Restaurants
+            </a>
+        </div>
+    </div>
+{% endif %}
 {% endblock %}

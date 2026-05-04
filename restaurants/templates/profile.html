@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card shadow-sm text-center" style="border-color: #e8e0d4;">
+            <div class="card-body p-4">
+                <i class="bi bi-person-circle text-maroon"
+                   style="font-size: 4rem;"></i>
+                <h3 class="text-maroon mt-2">{{ user.username }}</h3>
+                <p class="text-muted small mb-3">{{ user.email }}</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-2 text-start">
+                        <label for="id_bio" class="form-label small">About me</label>
+                        <textarea name="bio" id="id_bio" rows="3"
+                                  class="form-control"
+                                  placeholder="Tell other diners about yourself…">{{ profile.bio }}</textarea>
+                    </div>
+                    <button type="submit" class="btn btn-sm btn-warm">
+                        Save bio
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <!-- My Reviews -->
+        <div class="card shadow-sm mb-4" style="border-color: #e8e0d4;">
+            <div class="card-header text-white"
+                 style="background-color: #5c1a1a;">
+                <i class="bi bi-chat-square-text"></i>
+                My Reviews ({{ my_reviews.count }})
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for r in my_reviews %}
+                    <li class="list-group-item" style="border-color: #e8e0d4;">
+                        <div class="d-flex justify-content-between">
+                            <a href="{% url 'restaurant_detail' r.restaurant.id %}"
+                               class="text-maroon text-decoration-none">
+                                <strong>{{ r.restaurant.name }}</strong>
+                            </a>
+                            <span class="text-warning">
+                                {% for i in "12345" %}
+                                    {% if forloop.counter <= r.rating %}★{% else %}☆{% endif %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        <small class="text-muted">{{ r.comment|truncatewords:18 }}</small>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">
+                        You haven't written any reviews yet.
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- My Favorites -->
+        <div class="card shadow-sm mb-4" style="border-color: #e8e0d4;">
+            <div class="card-header text-white"
+                 style="background-color: #2d6a4f;">
+                <i class="bi bi-heart-fill"></i>
+                My Favorites ({{ my_favorites.count }})
+            </div>
+            <ul class="list-group list-group-flush">
+                {% for fav in my_favorites %}
+                    <li class="list-group-item" style="border-color: #e8e0d4;">
+                        <a href="{% url 'restaurant_detail' fav.restaurant.id %}"
+                           class="text-maroon text-decoration-none">
+                            {{ fav.restaurant.name }}
+                        </a>
+                        <small class="text-muted">
+                            · {{ fav.restaurant.location.district }}
+                        </small>
+                    </li>
+                {% empty %}
+                    <li class="list-group-item text-muted">
+                        No favorites saved yet.
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- My Restaurants (added by me) -->
+        {% if my_restaurants %}
+            <div class="card shadow-sm" style="border-color: #e8e0d4;">
+                <div class="card-header text-white"
+                     style="background-color: #5c1a1a;">
+                    <i class="bi bi-shop"></i>
+                    Restaurants I Added ({{ my_restaurants.count }})
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for r in my_restaurants %}
+                        <li class="list-group-item d-flex justify-content-between"
+                            style="border-color: #e8e0d4;">
+                            <a href="{% url 'restaurant_detail' r.id %}"
+                               class="text-maroon text-decoration-none">
+                                <strong>{{ r.name }}</strong>
+                            </a>
+                            <span class="text-muted small">
+                                {{ r.created_at|date:"M d, Y" }}
+                            </span>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
